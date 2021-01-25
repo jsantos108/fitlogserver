@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -21,12 +22,14 @@ db.once('open', function() {
 
 const exercisesRouter = require('./routes/exercises');
 const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
 
 app.use('/exercises', exercisesRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Connected!')
 });
 
 
