@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
 router.post('/register', (req, res) => {
     User.findOne({email: req.body.email}, (err, user) => {
@@ -38,10 +39,11 @@ router.post('/login', (req, res) => {
                 res.send("Email is incorrect");
             }else {
                 bcrypt.compare(req.body.password, user.password, function(err, result) {
-                    if(result) {
-                        res.send('Logged In');
+                    if(!result) {
+                        res.send('Password is incorrect');
                     }else {
-                        res.send('Password is incorrect')
+                        const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET)
+                        res.header('Authorization', token).send('Signed In');
                     }
                 });
             }
